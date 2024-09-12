@@ -7,7 +7,6 @@ export const CallbackPage = () => {
     const navigate = useNavigate();
 
     const exchangeAuthCodeForToken = async (authorizationCode: string, account_name: string) => {
-        console.log(authorizationCode, account_name)
         try {
             const response = await axios.post(`https://${account_name}/oauth2/access_token`, {
                 client_id: "38d7c8d2-61f8-4f34-a27f-2bfb59f749c3",
@@ -37,6 +36,8 @@ export const CallbackPage = () => {
         const account_name = params.get('referer')
 
         if (authorizationCode && account_name) {
+            localStorage.setItem("account_name", account_name);
+
             exchangeAuthCodeForToken(authorizationCode, account_name)
             .then(() => {
                 navigate('/home')
