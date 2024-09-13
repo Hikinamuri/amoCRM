@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Lead, Task } from "../..//types/types";
 import { getLeads } from "../../api/getLeads";
+import { getTasks } from "../../api/getTasks";
 
 export const Leads = () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -44,7 +45,7 @@ export const Leads = () => {
                 ...prev,
                 [leadId]: leadData.data,
             }));
-            getTasks()
+            getTasksData()
             setLoadingCardId(null);
         } catch (error) {
             console.error("Ошибка при загрузке данных:", error);
@@ -52,7 +53,7 @@ export const Leads = () => {
         }
     };
 
-    const getTasks = async () => {
+    const getTasksData = async () => {
         if(!accessToken || !account_name) return
 
         let tasksArray;
@@ -62,15 +63,11 @@ export const Leads = () => {
         if (cachedTasks) {
             tasksArray = JSON.parse(cachedTasks);
         } else {
-            const tasks = await axios.get(`https://${account_name}/api/v4/tasks`, {
-                headers: {
-                    'Authorization': 'Bearer ' + accessToken
-                }
-            });
+            const tasks = await getTasks(accessToken, account_name)
     
             if (!tasks) return
 
-            tasksArray = tasks.data._embedded.tasks;
+            tasksArray = tasks;
             localStorage.setItem('tasks',  JSON.stringify(tasksArray))
         }
 
@@ -119,8 +116,7 @@ export const Leads = () => {
         } else {
             setLoading(true);
             try {
-                console.log(accessToken, 'accessToken')
-                const leadsData = await getLeads(accessToken)
+                const leadsData = await getLeads(accessToken, account_name)
                 setLeads(leadsData);
             }
             finally {
