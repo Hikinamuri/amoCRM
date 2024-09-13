@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
-import { Lead, LeadsProps, Task } from "../..//types/types";
+import { Lead, Task } from "../..//types/types";
 import { getLeads } from "../../api/getLeads";
 
-export const Leads = ({ children }: LeadsProps) => {
+export const Leads = () => {
     const accessToken = localStorage.getItem('accessToken');
     const account_name = localStorage.getItem('account_name');
 
@@ -119,7 +119,8 @@ export const Leads = ({ children }: LeadsProps) => {
         } else {
             setLoading(true);
             try {
-                const leadsData = await getLeads(accessToken, account_name)
+                console.log(accessToken, 'accessToken')
+                const leadsData = await getLeads(accessToken)
                 setLeads(leadsData);
             }
             finally {
@@ -137,7 +138,6 @@ export const Leads = ({ children }: LeadsProps) => {
 
     return (
         <div>
-            {children}
             {loading ? <p>Загрузка...</p> : (
                 <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', color: 'white' }}>
                     <thead>
