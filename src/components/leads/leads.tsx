@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
-import { Lead, LeadsProps } from "../..//types/types";
+import { Lead, LeadsProps, Task } from "../..//types/types";
 
 export const Leads = ({ children }: LeadsProps) => {
     const accessToken = localStorage.getItem('accessToken');
     const account_name = localStorage.getItem('account_name');
+
     const [leads, setLeads] = useState<Lead[]>([]);
     const [loading, setLoading] = useState(false);
     const [openCardId, setOpenCardId] = useState<string | null>(null); 
@@ -14,14 +15,15 @@ export const Leads = ({ children }: LeadsProps) => {
     const fetchDealDetails = async (leadId: string) => {
         setLoadingCardId(leadId);
         try {
-            const response = await axios.get(`https://${account_name}/api/v4/leads/${leadId}`, {
+            const leadData = await axios.get(`https://${account_name}/api/v4/leads/${leadId}`, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken
                 }
             });
+            
             setDetailedData((prev) => ({
                 ...prev,
-                [leadId]: response.data,
+                [leadId]: leadData.data,
             }));
             setLoadingCardId(null);
         } catch (error) {
@@ -30,12 +32,48 @@ export const Leads = ({ children }: LeadsProps) => {
         }
     };
 
+    const getTasks = async () => {
+        const tasks = await axios.get(`https://${account_name}/api/v4/tasks`, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+
+        if (!tasks) {
+            return
+        }
+
+        const tasksArray = tasks.data._embedded.tasks;
+
+        tasksArray.forEach((task: Task) => {
+            const leadId = task.entity_id;
+            const taskId = task.id;
+            const taskData = {... task}
+
+            console.log(taskId, leadId)
+            if (taskId && leadId) {
+                setDetailedData((prev) => {
+                    console.log('prev', prev)
+                    return { 
+                        ...prev,
+                        [leadId]: {
+                            ...(prev[leadId] || {}),
+                            ...prev[leadId],
+                            tasks: [taskData],
+                        },
+                    }
+                });
+                console.log(detailedData)
+            }
+        });
+    }
+
     const toggleCard = (leadId: string) => {
         if (openCardId === leadId) {
             setOpenCardId(null);
         } else {
             setOpenCardId(leadId);
-            if (!detailedData[leadId]) {
+            if (!detailedData[leadId]?.id) {
                 fetchDealDetails(leadId);
             }
         }
@@ -57,9 +95,6 @@ export const Leads = ({ children }: LeadsProps) => {
                 const response = await axios.get(`https://${account_name}/api/v4/leads`, {
                     headers: { 'Authorization': 'Bearer ' + accessToken }
                 })
-
-                console.log(response.data?._embedded?.leads);
-
                 const leadsData = response.data?._embedded?.leads || [];
                 setLeads(leadsData);
                 localStorage.setItem('leads', JSON.stringify(leadsData));
@@ -72,8 +107,10 @@ export const Leads = ({ children }: LeadsProps) => {
 
     const memoizedLeads = useMemo(() => leads, [leads]);
 
+
     useEffect(() => {
         getLeads();
+        getTasks()
     }, []);
 
     return (
@@ -107,6 +144,7 @@ export const Leads = ({ children }: LeadsProps) => {
                                                         <p>{detailedData[lead.id].name}</p>
                                                         <p>{detailedData[lead.id].id}</p>
                                                         <p>{new Date(detailedData[lead.id].created_at * 1000).toLocaleDateString()}</p>
+                                                        <p>{detailedData[lead.id].price}</p>
                                                         <p>{detailedData[lead.id].price}</p>
                                                     </div>
                                                 )
