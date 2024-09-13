@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Leads } from "../../components/leads/leads";
 
-export const GeneralPage = () => {
+const GeneralPage = () => {
     const authUser = localStorage.getItem("accessToken")
 
     const getAuthorizationToken = () => {
@@ -20,3 +20,5 @@ export const GeneralPage = () => {
         </div>
     )
 }
+
+export default GeneralPage

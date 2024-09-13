@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export const CallbackPage = () => {
+const CallbackPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -45,3 +45,5 @@ export const CallbackPage = () => {
 
     return null
 };
+
+export default CallbackPage
