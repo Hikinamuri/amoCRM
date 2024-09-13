@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Lead, Task } from "../..//types/types";
 import { getLeads } from "../../api/getLeads";
 import { getTasks } from "../../api/getTasks";
+import { LeadCard } from "./lead/lead";
 
 export const Leads = () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -13,24 +14,6 @@ export const Leads = () => {
     const [openCardId, setOpenCardId] = useState<string | null>(null); 
     const [loadingCardId, setLoadingCardId] =  useState<string | null>(null)
     const [detailedData, setDetailedData] = useState<{ [key: string]: Lead }>({});
-
-    const formatDate = (timestamp: number) => {
-        const date = new Date(timestamp * 1000);
-        return date.toLocaleDateString('ru-RU');
-    };
-    
-    const getStatusColor = (dueDate: Date) => {
-        const now = new Date();
-        const tomorrow = new Date();
-        tomorrow.setDate(now.getDate() + 1);
-    
-        console.log(dueDate, now, tomorrow);
-        if (dueDate.toDateString() === now.toDateString()) return 'green';
-        if (dueDate < now) return 'red'
-        else {
-            return 'yellow'
-        }
-    };
 
     const fetchDealDetails = async (leadId: string) => {
         setLoadingCardId(leadId);
@@ -102,7 +85,6 @@ export const Leads = () => {
             }
         }
     };
-
     
     const getLeadsData = async () => {
         if(!accessToken || !account_name) {
@@ -127,7 +109,6 @@ export const Leads = () => {
 
     const memoizedLeads = useMemo(() => leads, [leads]);
 
-
     useEffect(() => {
         getLeadsData();
     }, []);
@@ -145,52 +126,14 @@ export const Leads = () => {
                     </thead>
                     <tbody>
                         {memoizedLeads.map((lead, index) => (
-                            <div key={index}>
-                                <tr onClick={() => toggleCard(lead.id)} style={{ cursor: 'pointer' }}>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{lead.name}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{lead.id}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{lead.price}</td>
-                                </tr>
-                                {openCardId === lead.id && (
-                                    <tr>
-                                        <td colSpan={3} style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                            {loadingCardId === lead.id ? (
-                                                <p>Загрузка...</p>
-                                            ) : (
-                                                detailedData[lead.id] && (
-                                                    <div>
-                                                        <p>{detailedData[lead.id].name}</p>
-                                                        <p>{detailedData[lead.id].id}</p>
-                                                        {detailedData[lead.id].tasks ? (
-                                                            <p>
-                                                                Статус задачи: 
-                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <circle
-                                                                        cx="8"
-                                                                        cy="8"
-                                                                        r="8"
-                                                                        fill={getStatusColor(new Date(detailedData[lead.id].tasks[0].complete_till * 1000))}
-                                                                    />
-                                                                </svg>
-                                                                {formatDate(detailedData[lead.id].tasks[0].complete_till)}
-                                                            </p>
-                                                        ) : (
-                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <circle
-                                                                    cx="8"
-                                                                    cy="8"
-                                                                    r="8"
-                                                                    fill='red'
-                                                                />
-                                                            </svg>
-                                                        )}
-                                                    </div>
-                                                )
-                                            )}
-                                        </td>
-                                    </tr>
-                                )}
-                            </div>
+                            <LeadCard
+                                key={index}
+                                lead={lead}
+                                detailedData={detailedData}
+                                openCardId={openCardId}
+                                loadingCardId={loadingCardId}
+                                toggleCard={toggleCard}
+                            />
                         ))}
                     </tbody>
                 </table>
