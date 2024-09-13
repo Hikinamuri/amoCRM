@@ -13,6 +13,24 @@ export const Leads = ({ children }: LeadsProps) => {
     const [loadingCardId, setLoadingCardId] =  useState<string | null>(null)
     const [detailedData, setDetailedData] = useState<{ [key: string]: Lead }>({});
 
+    const formatDate = (timestamp: number) => {
+        const date = new Date(timestamp * 1000);
+        return date.toLocaleDateString('ru-RU');
+    };
+    
+    const getStatusColor = (dueDate: Date) => {
+        const now = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(now.getDate() + 1);
+    
+        console.log(dueDate, now, tomorrow);
+        if (dueDate.toDateString() === now.toDateString()) return 'green';
+        if (dueDate < now) return 'red'
+        else {
+            return 'yellow'
+        }
+    };
+
     const fetchDealDetails = async (leadId: string) => {
         setLoadingCardId(leadId);
         try {
@@ -56,9 +74,9 @@ export const Leads = ({ children }: LeadsProps) => {
             localStorage.setItem('tasks',  JSON.stringify(tasksArray))
         }
 
-        console.log(tasksArray)
+        const sortedTasks = tasksArray.sort((a: Task, b: Task) => a.complete_till - b.complete_till);
 
-        tasksArray.forEach((task: Task) => {
+        sortedTasks.forEach((task: Task) => {
             const leadId = task.entity_id;
             const taskId = task.id;
             const taskData = {...task}
@@ -148,8 +166,28 @@ export const Leads = ({ children }: LeadsProps) => {
                                                         <p>{detailedData[lead.id].name}</p>
                                                         <p>{detailedData[lead.id].id}</p>
                                                         {detailedData[lead.id].tasks ? (
-                                                            <p>{new Date(detailedData[lead.id]?.tasks[0].complete_till * 1000).toLocaleDateString()}</p>
-                                                        ) : null}
+                                                            <p>
+                                                                Статус задачи: 
+                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <circle
+                                                                        cx="8"
+                                                                        cy="8"
+                                                                        r="8"
+                                                                        fill={getStatusColor(new Date(detailedData[lead.id].tasks[0].complete_till * 1000))}
+                                                                    />
+                                                                </svg>
+                                                                {formatDate(detailedData[lead.id].tasks[0].complete_till)}
+                                                            </p>
+                                                        ) : (
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <circle
+                                                                    cx="8"
+                                                                    cy="8"
+                                                                    r="8"
+                                                                    fill='red'
+                                                                />
+                                                            </svg>
+                                                        )}
                                                     </div>
                                                 )
                                             )}
