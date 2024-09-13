@@ -26,6 +26,7 @@ export const Leads = ({ children }: LeadsProps) => {
                 ...prev,
                 [leadId]: leadData.data,
             }));
+            getTasks()
             setLoadingCardId(null);
         } catch (error) {
             console.error("Ошибка при загрузке данных:", error);
@@ -34,37 +35,44 @@ export const Leads = ({ children }: LeadsProps) => {
     };
 
     const getTasks = async () => {
-        const tasks = await axios.get(`https://${account_name}/api/v4/tasks`, {
-            headers: {
-                'Authorization': 'Bearer ' + accessToken
-            }
-        });
+        if(!accessToken || !account_name) return
 
-        if (!tasks) {
-            return
+        let tasksArray;
+
+        const cachedTasks = localStorage.getItem('tasks');
+
+        if (cachedTasks) {
+            tasksArray = JSON.parse(cachedTasks);
+        } else {
+            const tasks = await axios.get(`https://${account_name}/api/v4/tasks`, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+    
+            if (!tasks) return
+
+            tasksArray = tasks.data._embedded.tasks;
+            localStorage.setItem('tasks',  JSON.stringify(tasksArray))
         }
 
-        const tasksArray = tasks.data._embedded.tasks;
+        console.log(tasksArray)
 
         tasksArray.forEach((task: Task) => {
             const leadId = task.entity_id;
             const taskId = task.id;
-            const taskData = {... task}
+            const taskData = {...task}
 
-            console.log(taskId, leadId)
             if (taskId && leadId) {
                 setDetailedData((prev) => {
-                    console.log('prev', prev)
-                    return { 
+                    return {
                         ...prev,
                         [leadId]: {
-                            ...(prev[leadId] || {}),
                             ...prev[leadId],
                             tasks: [taskData],
                         },
                     }
                 });
-                console.log(detailedData)
             }
         });
     }
@@ -82,12 +90,12 @@ export const Leads = ({ children }: LeadsProps) => {
 
     
     const getLeadsData = async () => {
-        if(!accessToken && !account_name) {
+        if(!accessToken || !account_name) {
             return
         }
 
         const cachedLeads = localStorage.getItem('leads');
-
+        
         if (cachedLeads) {
             setLeads(JSON.parse(cachedLeads))
         } else {
@@ -107,7 +115,6 @@ export const Leads = ({ children }: LeadsProps) => {
 
     useEffect(() => {
         getLeadsData();
-        // getTasks()
     }, []);
 
     return (
@@ -140,9 +147,9 @@ export const Leads = ({ children }: LeadsProps) => {
                                                     <div>
                                                         <p>{detailedData[lead.id].name}</p>
                                                         <p>{detailedData[lead.id].id}</p>
-                                                        <p>{new Date(detailedData[lead.id].created_at * 1000).toLocaleDateString()}</p>
-                                                        <p>{detailedData[lead.id].price}</p>
-                                                        <p>{detailedData[lead.id].price}</p>
+                                                        {detailedData[lead.id].tasks ? (
+                                                            <p>{new Date(detailedData[lead.id]?.tasks[0].complete_till * 1000).toLocaleDateString()}</p>
+                                                        ) : null}
                                                     </div>
                                                 )
                                             )}
