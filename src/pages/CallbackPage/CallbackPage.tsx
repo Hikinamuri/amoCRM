@@ -20,6 +20,7 @@ export const CallbackPage = () => {
                 try {
                     localStorage.setItem("accessToken", response.data.access_token);
                     localStorage.setItem("refreshToken", response.data.refresh_token);
+                    navigate('/home')
                 }
                 catch {
                     console.log("Ошибка установки токена")
@@ -38,11 +39,7 @@ export const CallbackPage = () => {
 
         if (authorizationCode && account_name) {
             localStorage.setItem("account_name", account_name);
-
             exchangeAuthCodeForToken(authorizationCode, account_name)
-            .then(() => {
-                navigate('/home')
-            })
         }
     }, [location, navigate]);
 
