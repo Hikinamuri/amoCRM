@@ -9,11 +9,11 @@ export const CallbackPage = () => {
     const exchangeAuthCodeForToken = async (authorizationCode: string, account_name: string) => {
         try {
             const response = await axios.post(`https://${account_name}/oauth2/access_token`, {
-                client_id: "38d7c8d2-61f8-4f34-a27f-2bfb59f749c3",
-                client_secret: "ifPhOPAkcINzSz0vbFx8Op9n12H52uaDecT2nsIVHZPKjnHd0XhhZzVZxTOtiWA7",
+                client_id: import.meta.env.VITE_CLIENT_ID,
+                client_secret: import.meta.env.VITE_CLIENT_SECRET,
                 grant_type: "authorization_code",
                 code: authorizationCode,
-                redirect_uri: "http://localhost:5173/callback",
+                redirect_uri: import.meta.env.VITE_REDIRECT_URI,
             });
     
             if (response) {

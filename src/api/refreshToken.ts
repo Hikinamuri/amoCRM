@@ -5,11 +5,11 @@ const refreshToken = async () => {
         const refresh_token = localStorage.getItem("refreshToken");
         const response = await axios.post("https://hikinamuri.amocrm.ru/oauth2/access_token", 
         {
-            client_id: "38d7c8d2-61f8-4f34-a27f-2bfb59f749c3",
-            client_secret: "ifPhOPAkcINzSz0vbFx8Op9n12H52uaDecT2nsIVHZPKjnHd0XhhZzVZxTOtiWA7",
+            client_id: import.meta.env.VITE_CLIENT_ID,
+            client_secret: import.meta.env.VITE_CLIENT_SECRET,
             grant_type: "refresh_token",
             refresh_token: refresh_token,
-            redirect_uri: "http://localhost:5173/callback",
+            redirect_uri: import.meta.env.VITE_REDIRECT_URI,
         });
         const newAccessToken = response.data.access_token;
         const newRefreshToken = response.data.refresh_token;
