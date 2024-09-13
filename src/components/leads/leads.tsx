@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Lead, LeadsProps, Task } from "../..//types/types";
+import { getLeads } from "../../api/getLeads";
 
 export const Leads = ({ children }: LeadsProps) => {
     const accessToken = localStorage.getItem('accessToken');
@@ -80,7 +81,7 @@ export const Leads = ({ children }: LeadsProps) => {
     };
 
     
-    const getLeads = async () => {
+    const getLeadsData = async () => {
         if(!accessToken && !account_name) {
             return
         }
@@ -92,12 +93,8 @@ export const Leads = ({ children }: LeadsProps) => {
         } else {
             setLoading(true);
             try {
-                const response = await axios.get(`https://${account_name}/api/v4/leads`, {
-                    headers: { 'Authorization': 'Bearer ' + accessToken }
-                })
-                const leadsData = response.data?._embedded?.leads || [];
+                const leadsData = await getLeads(accessToken, account_name)
                 setLeads(leadsData);
-                localStorage.setItem('leads', JSON.stringify(leadsData));
             }
             finally {
                 setLoading(false);
@@ -109,8 +106,8 @@ export const Leads = ({ children }: LeadsProps) => {
 
 
     useEffect(() => {
-        getLeads();
-        getTasks()
+        getLeadsData();
+        // getTasks()
     }, []);
 
     return (

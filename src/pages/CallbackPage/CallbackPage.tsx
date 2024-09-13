@@ -19,6 +19,7 @@ export const CallbackPage = () => {
             if (response) {
                 try {
                     localStorage.setItem("accessToken", response.data.access_token);
+                    localStorage.setItem("refreshToken", response.data.refresh_token);
                 }
                 catch {
                     console.log("Ошибка установки токена")
