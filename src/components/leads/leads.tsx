@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Lead, Task } from "../..//types/types";
 import LeadsAPI from "../../api/LeadsAPI";
