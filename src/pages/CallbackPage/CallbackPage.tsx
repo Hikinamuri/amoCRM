@@ -35,6 +35,11 @@ const CallbackPage = () => {
         const params = new URLSearchParams(location.search);
         const authorizationCode = params.get("code");
         const account_name = params.get('referer')
+        const isAuth = params.get('error')
+        if (isAuth) {
+            alert("Вы запретили доступ (")
+            navigate('/home')
+        }
 
         if (authorizationCode && account_name) {
             try {
