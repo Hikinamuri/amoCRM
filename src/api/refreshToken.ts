@@ -6,7 +6,7 @@ import axios, { AxiosAdapter, AxiosRequestConfig, AxiosPromise } from 'axios';
 const refreshToken = async () => {
     try {
         const refresh_token = localStorage.getItem("refreshToken");
-        const response = await axios.post(`https://hikinamuri.amocrm.ru/oauth2/access_token`, 
+        const response = await axios.post(`/oauth2/access_token`, 
         {
             client_id: import.meta.env.VITE_CLIENT_ID,
             client_secret: import.meta.env.VITE_CLIENT_SECRET,

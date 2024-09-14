@@ -7,7 +7,7 @@ class LeadsAPI {
                 headers: { 'Authorization': 'Bearer ' + accessToken }
             })
     
-            if (response && response.status == 200) {
+            if (response && response.status == 200 && response.data._embedded?.leads.length > 0) {
                 localStorage.setItem('leads', JSON.stringify(response.data?._embedded?.leads || []));
             }
             return response.data._embedded?.leads
