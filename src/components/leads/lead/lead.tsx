@@ -1,4 +1,5 @@
 import { Lead } from "../../../types/types";
+import Loader from "../../loader/loader";
 
 interface LeadCardProps {
     lead: Lead;
@@ -38,7 +39,7 @@ export const LeadCard = ({ lead, detailedData, openCardId, loadingCardId, toggle
                 <tr>
                     <td colSpan={3} style={{ border: '1px solid #ddd', padding: '8px' }}>
                         {loadingCardId === lead.id ? (
-                            <p>Загрузка...</p>
+                            <Loader />
                         ) : (
                             detailedData[lead.id] && (
                                 <div>

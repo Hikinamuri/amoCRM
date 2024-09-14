@@ -4,6 +4,7 @@ import { Lead, Task } from "../..//types/types";
 import { getLeads } from "../../api/getLeads";
 import { getTasks } from "../../api/getTasks";
 import { LeadCard } from "./lead/lead";
+import Loader from "../loader/loader";
 
 export const Leads = () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -115,7 +116,7 @@ export const Leads = () => {
 
     return (
         <div>
-            {loading ? <p>Загрузка...</p> : (
+            {loading ? <Loader /> : (
                 <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', color: 'white' }}>
                     <thead>
                         <tr>
