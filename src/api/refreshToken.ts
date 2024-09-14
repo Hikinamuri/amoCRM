@@ -1,6 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios, { AxiosAdapter, AxiosRequestConfig, AxiosPromise } from 'axios';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const refreshToken = async () => {
     try {
@@ -26,24 +27,21 @@ const refreshToken = async () => {
     }
 }
 
-let lastRequestTime = 0;
-
-const throttledRequest = async <T>(requestFn: () => Promise<AxiosResponse<T>>): Promise<AxiosResponse<T>> => {
-    const now = Date.now();
-    const timeSinceLastRequest = now - lastRequestTime;
-
-    if (timeSinceLastRequest < 333) {
-        await delay(333 - timeSinceLastRequest);
-    }
-
-    lastRequestTime = Date.now();
-
-    return requestFn();
+const delayAdapter = (adapter: AxiosAdapter, delay: number): AxiosAdapter => {
+    return (config: AxiosRequestConfig): AxiosPromise<any> => {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(adapter(config));
+            }, delay);
+        });
+    };
 };
 
 export const axiosInstance = axios.create({
     baseURL: '/',
 });
+
+axiosInstance.defaults.adapter = delayAdapter(axios.defaults.adapter as AxiosAdapter, 334);
 
 axiosInstance.interceptors.response.use(                                                                         
     (responce) => responce,
@@ -56,7 +54,7 @@ axiosInstance.interceptors.response.use(
                 const originalRequest = error.config;
                 originalRequest.headers['Authorization'] = `Bearer ${newToken}`
 
-                return throttledRequest(() => axios(originalRequest));
+                return axios(originalRequest);
             }
             catch (refreshError) {
                 return Promise.reject(refreshError)

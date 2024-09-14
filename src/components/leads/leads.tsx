@@ -24,13 +24,6 @@ export const Leads = () => {
 
         try {
             const leadData = await LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
-            LeadsAPI.getLead(accessToken, leadId)
             
             setDetailedData((prev) => ({
                 ...prev,
