@@ -1,5 +1,6 @@
 import { Lead } from "../../../types/types";
 import Loader from "../../loader/loader";
+import cl from './index.module.css';
 
 interface LeadCardProps {
     lead: Lead;
@@ -29,25 +30,25 @@ export const LeadCard = ({ lead, detailedData, openCardId, loadingCardId, toggle
 
     return (
         <>
-            <tr onClick={() => toggleCard(lead.id)} style={{ cursor: 'pointer' }}>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{lead.name}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{lead.id}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{lead.price}</td>
+            <tr onClick={() => toggleCard(lead.id)} className={cl.tr}>
+                <td>{lead.name}</td>
+                <td>{lead.id}</td>
+                <td>{lead.price}</td>
             </tr>
             {openCardId === lead.id && (
                 <tr>
-                    <td colSpan={3} style={{ border: '1px solid #ddd', padding: '8px' }}>
+                    <td colSpan={3} className={cl.expandedTd}>
                         {loadingCardId === lead.id ? (
                             <Loader />
                         ) : (
                             detailedData[lead.id] && (
-                                <div>
+                                <div className={cl.detailedContent}>
                                     <p>{detailedData[lead.id].name}</p>
                                     <p>{detailedData[lead.id].id}</p>
                                     {detailedData[lead.id].tasks ? (
-                                        <p>
-                                            Статус задачи: 
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <div className={cl.detailedContent_status}>
+                                            <p>Статус задачи: </p>
+                                            <svg className={cl.statusIcon} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <circle
                                                     cx="8"
                                                     cy="8"
@@ -56,16 +57,19 @@ export const LeadCard = ({ lead, detailedData, openCardId, loadingCardId, toggle
                                                 />
                                             </svg>
                                             {formatDate(detailedData[lead.id].tasks[0].complete_till)}
-                                        </p>
+                                        </div>
                                     ) : (
-                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle
-                                                cx="8"
-                                                cy="8"
-                                                r="8"
-                                                fill='red'
-                                            />
-                                        </svg>
+                                        <div className={cl.detailedContent_status}>
+                                            <p>Нет задачи</p>
+                                            <svg className={cl.statusIcon} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle
+                                                    cx="8"
+                                                    cy="8"
+                                                    r="8"
+                                                    fill='red'
+                                                />
+                                            </svg>
+                                        </div>
                                     )}
                                 </div>
                             )

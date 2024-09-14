@@ -17,7 +17,7 @@ const refreshToken = async () => {
         const newRefreshToken = response.data.refresh_token;
 
         localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
+        localStorage.setItem("refreshToken", newRefreshToken);        
 
         return newAccessToken;
     } catch (error) {

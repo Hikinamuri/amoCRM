@@ -5,6 +5,8 @@ import { getTasks } from "../../api/getTasks";
 import { LeadCard } from "./lead/lead";
 import Loader from "../loader/loader";
 
+import cl from './index.module.css'
+
 export const Leads = () => {
     const accessToken = localStorage.getItem('accessToken');
     const account_name = localStorage.getItem('account_name');
@@ -115,15 +117,15 @@ export const Leads = () => {
     return (
         <div>
             {loading ? <Loader /> : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', color: 'white' }}>
+                <table className={cl.table}>
                     <thead>
                         <tr>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Название сделки</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Сумма сделки</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>ID</th>
+                            <th className={cl.th}>Название сделки</th>
+                            <th className={cl.th}>Сумма сделки</th>
+                            <th className={cl.th}>ID</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className={cl.tbody}>
                         {memoizedLeads.map((lead, index) => (
                             <LeadCard
                                 key={index}

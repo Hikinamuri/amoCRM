@@ -31,14 +31,18 @@ const CallbackPage = () => {
         }
     };
     
-
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const authorizationCode = params.get("code");
         const account_name = params.get('referer')
 
         if (authorizationCode && account_name) {
-            localStorage.setItem("account_name", account_name);
+            try {
+                localStorage.setItem("account_name", account_name);
+            } catch {
+                localStorage.clear();
+                localStorage.setItem("account_name", account_name);
+            }
             exchangeAuthCodeForToken(authorizationCode, account_name)
         }
     }, [location, navigate]);

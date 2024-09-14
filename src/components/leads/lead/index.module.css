@@ -1,0 +1,44 @@
+.tr {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tr:hover {
+    background-color: #444;
+}
+
+td {
+    border: 1px solid #444;
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+.expandedTd {
+    border: 1px solid #444;
+    padding: 12px 16px;
+    background-color: #2e2e2e;
+}
+
+.loader {
+    text-align: center;
+}
+
+.statusIcon {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+}
+
+.detailedContent {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.detailedContent_status {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 10px;
+}
