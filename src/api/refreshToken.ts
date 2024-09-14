@@ -32,11 +32,12 @@ const throttledRequest = async <T>(requestFn: () => Promise<AxiosResponse<T>>): 
     const now = Date.now();
     const timeSinceLastRequest = now - lastRequestTime;
 
+    // Если прошло меньше 333 мс, ждем оставшееся время
     if (timeSinceLastRequest < 333) {
         await delay(333 - timeSinceLastRequest);
     }
 
-    lastRequestTime = Date.now();
+    lastRequestTime = Date.now(); // Обновляем время последнего запроса
 
     return requestFn();
 };
