@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 const refreshToken = async () => {
     try {
         const refresh_token = localStorage.getItem("refreshToken");
@@ -24,9 +26,25 @@ const refreshToken = async () => {
     }
 }
 
+let lastRequestTime = 0;
+
+const throttledRequest = async (requestFn: () => Promise<any>) => {
+    const now = Date.now();
+    const timeSinceLastRequest = now - lastRequestTime;
+
+    // Если прошло меньше 333 мс, ждем оставшееся время
+    if (timeSinceLastRequest < 333) {
+        await delay(333 - timeSinceLastRequest);
+    }
+
+    lastRequestTime = Date.now(); // Обновляем время последнего запроса
+
+    return requestFn();
+};
+
 export const axiosInstance = axios.create({
     baseURL: `https://`,
-})
+});
 
 axiosInstance.interceptors.response.use(
     (responce) => responce,
@@ -39,7 +57,7 @@ axiosInstance.interceptors.response.use(
                 const originalRequest = error.config;
                 originalRequest.headers['Authorization'] = `Bearer ${newToken}`
 
-                return axios(originalRequest)
+                return throttledRequest(() => axios(originalRequest));
             }
             catch (refreshError) {
                 return Promise.reject(refreshError)
