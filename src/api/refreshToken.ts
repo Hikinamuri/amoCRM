@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -28,7 +28,7 @@ const refreshToken = async () => {
 
 let lastRequestTime = 0;
 
-const throttledRequest = async (requestFn: () => Promise<any>) => {
+const throttledRequest = async <T>(requestFn: () => Promise<AxiosResponse<T>>): Promise<AxiosResponse<T>> => {
     const now = Date.now();
     const timeSinceLastRequest = now - lastRequestTime;
 
