@@ -5,7 +5,7 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const refreshToken = async () => {
     try {
         const refresh_token = localStorage.getItem("refreshToken");
-        const response = await axios.post("https://hikinamuri.amocrm.ru/oauth2/access_token", 
+        const response = await axios.post(`https://hikinamuri.amocrm.ru/oauth2/access_token`, 
         {
             client_id: import.meta.env.VITE_CLIENT_ID,
             client_secret: import.meta.env.VITE_CLIENT_SECRET,
@@ -42,10 +42,10 @@ const throttledRequest = async <T>(requestFn: () => Promise<AxiosResponse<T>>): 
 };
 
 export const axiosInstance = axios.create({
-    baseURL: `https://`,
+    baseURL: '/',
 });
 
-axiosInstance.interceptors.response.use(
+axiosInstance.interceptors.response.use(                                                                         
     (responce) => responce,
     async (error) => {
         if(error.response && error.response.status === 401) {

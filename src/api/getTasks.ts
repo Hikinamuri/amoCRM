@@ -1,8 +1,8 @@
 import { axiosInstance } from "./refreshToken"
 
-export const getTasks = async (accessToken: string, account_name: string) => {
+export const getTasks = async (accessToken: string) => {
     try {
-        const response = await axiosInstance.get(`${account_name}/api/v4/tasks`, {
+        const response = await axiosInstance.get(`/api/v4/tasks`, {
             headers: { 'Authorization': 'Bearer ' + accessToken }
         })
 

@@ -1,9 +1,9 @@
 import { axiosInstance } from "./refreshToken"
 
 class LeadsAPI {
-    public static getLeads = async (accessToken: string, account_name: string) => {
+    public static getLeads = async (accessToken: string) => {
         try {
-            const response = await axiosInstance.get(`${account_name}/api/v4/leads`, {
+            const response = await axiosInstance.get(`/api/v4/leads`, {
                 headers: { 'Authorization': 'Bearer ' + accessToken }
             })
     
@@ -16,9 +16,9 @@ class LeadsAPI {
             console.log(err)
         }
     }
-    public static getLead = async (accessToken: string, account_name: string, leadId: string) => {
+    public static getLead = async (accessToken: string, leadId: string) => {
         try {
-            const response = await axiosInstance.get(`https://${account_name}/api/v4/leads/${leadId}`, {
+            const response = await axiosInstance.get(`/api/v4/leads/${leadId}`, {
                 headers: { 'Authorization': 'Bearer ' + accessToken }
             })
 

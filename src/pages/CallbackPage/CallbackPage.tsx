@@ -6,9 +6,9 @@ const CallbackPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const exchangeAuthCodeForToken = async (authorizationCode: string, account_name: string) => {
+    const exchangeAuthCodeForToken = async (authorizationCode: string) => {
         try {
-            const response = await axios.post(`https://${account_name}/oauth2/access_token`, {
+            const response = await axios.post(`/oauth2/access_token`, {
                 client_id: import.meta.env.VITE_CLIENT_ID,
                 client_secret: import.meta.env.VITE_CLIENT_SECRET,
                 grant_type: "authorization_code",
@@ -43,7 +43,7 @@ const CallbackPage = () => {
                 localStorage.clear();
                 localStorage.setItem("account_name", account_name);
             }
-            exchangeAuthCodeForToken(authorizationCode, account_name)
+            exchangeAuthCodeForToken(authorizationCode)
         }
     }, [location, navigate]);
 

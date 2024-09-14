@@ -23,7 +23,14 @@ export const Leads = () => {
         if(!accessToken || !account_name) return
 
         try {
-            const leadData = await LeadsAPI.getLead(accessToken, account_name, leadId)
+            const leadData = await LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
+            LeadsAPI.getLead(accessToken, leadId)
             
             setDetailedData((prev) => ({
                 ...prev,
@@ -47,7 +54,7 @@ export const Leads = () => {
         if (cachedTasks) {
             tasksArray = JSON.parse(cachedTasks);
         } else {
-            const tasks = await getTasks(accessToken, account_name)
+            const tasks = await getTasks(accessToken)
     
             if (!tasks) return
 
@@ -99,7 +106,7 @@ export const Leads = () => {
         } else {
             setLoading(true);
             try {
-                const leadsData = await LeadsAPI.getLeads(accessToken, account_name)
+                const leadsData = await LeadsAPI.getLeads(accessToken)
                 setLeads(leadsData);
             }
             finally {
