@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Lead, Task } from "../..//types/types";
-import { getLeads } from "../../api/getLeads";
+import LeadsAPI from "../../api/LeadsAPI";
 import { getTasks } from "../../api/getTasks";
 import { LeadCard } from "./lead/lead";
 import Loader from "../loader/loader";
@@ -18,16 +18,15 @@ export const Leads = () => {
 
     const fetchDealDetails = async (leadId: string) => {
         setLoadingCardId(leadId);
+
+        if(!accessToken || !account_name) return
+
         try {
-            const leadData = await axios.get(`https://${account_name}/api/v4/leads/${leadId}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + accessToken
-                }
-            });
+            const leadData = await LeadsAPI.getLead(accessToken, account_name, leadId)
             
             setDetailedData((prev) => ({
                 ...prev,
-                [leadId]: leadData.data,
+                [leadId]: leadData?.data,
             }));
             getTasksData()
             setLoadingCardId(null);
@@ -99,7 +98,7 @@ export const Leads = () => {
         } else {
             setLoading(true);
             try {
-                const leadsData = await getLeads(accessToken, account_name)
+                const leadsData = await LeadsAPI.getLeads(accessToken, account_name)
                 setLeads(leadsData);
             }
             finally {

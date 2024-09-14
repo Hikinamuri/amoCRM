@@ -20,7 +20,6 @@ export const LeadCard = ({ lead, detailedData, openCardId, loadingCardId, toggle
         const tomorrow = new Date();
         tomorrow.setDate(now.getDate() + 1);
     
-        console.log(dueDate, now, tomorrow);
         if (dueDate.toDateString() === now.toDateString()) return 'green';
         if (dueDate < now) return 'red'
         else {
